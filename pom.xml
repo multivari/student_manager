@@ -54,7 +54,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.student.manager.student_manager.StudentManagerApplication</mainClass>
+                    <mainClass>com.student.manager.StudentManagerApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>
