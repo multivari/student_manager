@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.student.manager.mapper.StudentMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="studentResultMap" type="com.student.manager.domain.Student">
+        <id property="studentId" column="student_id" />
+        <result property="name" column="name" />
+        <result property="email" column="email" />
+        <result property="phone" column="phone" />
+        <result property="dob" column="dob" />
+        <result property="address" column="address" />
+        <result property="enrollmentDate" column="enrollment_date" />
+    </resultMap>
+
+    <!-- 插入操作 -->
+    <insert id="insertStudent" useGeneratedKeys="true" keyProperty="studentId">
+        INSERT INTO student (name, email, phone, dob, address, enrollment_date)
+        VALUES (#{name}, #{email}, #{phone}, #{dob}, #{address}, #{enrollmentDate})
+    </insert>
+
+    <!-- 更新操作 -->
+    <update id="updateStudent">
+        UPDATE student
+        SET name = #{name},
+        email = #{email},
+        phone = #{phone},
+        dob = #{dob},
+        address = #{address},
+        enrollment_date = #{enrollmentDate}
+        WHERE student_id = #{studentId}
+    </update>
+
+    <!-- 删除操作 -->
+    <delete id="deleteStudent">
+        DELETE FROM student WHERE student_id = #{studentId}
+    </delete>
+
+    <!-- 查询操作 - 根据ID查询学生 -->
+    <select id="selectStudentById" resultMap="studentResultMap">
+        SELECT student_id, name, email, phone, dob, address, enrollment_date
+        FROM student
+        WHERE student_id = #{studentId}
+    </select>
+
+    <!-- 查询操作 - 查询所有学生 -->
+    <select id="selectAllStudents" resultMap="studentResultMap">
+        SELECT student_id, name, email, phone, dob, address, enrollment_date
+        FROM student
+    </select>
+
+    <!-- 查询操作 - 根据条件查询学生 -->
+    <select id="selectStudentsByCondition" resultMap="studentResultMap">
+        SELECT student_id, name, email, phone, dob, address, enrollment_date
+        FROM student
+        WHERE 1 = 1
+        <if test="name != null">
+            AND name = #{name}
+        </if>
+        <if test="email != null">
+            AND email = #{email}
+        </if>
+        <if test="phone != null">
+            AND phone = #{phone}
+        </if>
+        <if test="dob != null">
+            AND dob = #{dob}
+        </if>
+        <if test="address != null">
+            AND address = #{address}
+        </if>
+    </select>
+
+</mapper>

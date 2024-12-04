@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/student_management?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root         # 替换为你的数据库用户名
+    password: wjzzxnsw         # 替换为你的数据库密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+  # 服务器配置
+  server:
+    port: 8080  # 默认端口
+
+  # 日志配置
+  logging:
+    level:
+      org.springframework: INFO
+      com.example: DEBUG  # 项目包名
+
+mybatis:
+  mapper-locations: classpath:/mapper/*.xml        # 映射文件路径
+  type-aliases-package: com.student.manager.domain         # 映射的实体类路径
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 输出 SQL 日志
+
+
