@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.student.manager.mapper.InstructorMapper">
+
+    <!-- 映射查询结果 -->
+    <resultMap id="InstructorResultMap" type="com.student.manager.domain.Instructor">
+        <result property="instructorId" column="instructor_id"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+
+    <!-- 查询所有教师 -->
+    <select id="findAll" resultMap="InstructorResultMap">
+        SELECT * FROM instructor
+    </select>
+
+    <!-- 根据ID查询单个教师 -->
+    <select id="findById" resultMap="InstructorResultMap">
+        SELECT * FROM instructor WHERE instructor_id = #{id}
+    </select>
+
+    <!-- 插入教师 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="instructorId">
+        INSERT INTO instructor(name, email, phone)
+        VALUES(#{name}, #{email}, #{phone})
+    </insert>
+
+    <!-- 更新教师 -->
+    <update id="update">
+        UPDATE instructor
+        SET name = #{name}, email = #{email}, phone = #{phone}
+        WHERE instructor_id = #{instructorId}
+    </update>
+
+    <!-- 删除教师 -->
+    <delete id="deleteById">
+        DELETE FROM instructor WHERE instructor_id = #{id}
+    </delete>
+
+</mapper>

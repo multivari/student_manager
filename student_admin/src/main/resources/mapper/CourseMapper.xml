@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.student.manager.mapper.CourseMapper">
+    <!-- 查询所有课程 -->
+    <select id="findAll" resultType="com.student.manager.domain.Course">
+        SELECT * FROM course
+    </select>
+
+    <!-- 根据课程ID查询课程 -->
+    <select id="findById" resultType="com.student.manager.domain.Course">
+        SELECT * FROM course WHERE course_id = #{courseId}
+    </select>
+
+    <!-- 插入新的课程 -->
+    <insert id="insert">
+        INSERT INTO course (course_name, credits, instructor_id)
+        VALUES (#{courseName}, #{credits}, #{instructorId})
+    </insert>
+
+    <!-- 更新课程信息 -->
+    <update id="update">
+        UPDATE course
+        SET course_name = #{courseName}, credits = #{credits}, instructor_id = #{instructorId}
+        WHERE course_id = #{courseId}
+    </update>
+
+    <!-- 删除课程 -->
+    <delete id="delete">
+        DELETE FROM course WHERE course_id = #{courseId}
+    </delete>
+</mapper>

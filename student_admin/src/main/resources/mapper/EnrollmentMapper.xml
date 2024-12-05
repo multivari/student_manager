@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--<mapper namespace="com.student.manager.mapper.">-->
+<mapper namespace="com.student.manager.mapper.EnrollmentMapper">
+
+    <!-- 映射查询结果 -->
+    <resultMap id="EnrollmentResultMap" type="com.student.manager.domain.Enrollment">
+        <result property="enrollmentId" column="enrollment_id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="grade" column="grade"/>
+    </resultMap>
+
+    <!-- 查询所有选课记录 -->
+    <select id="findAll" resultMap="EnrollmentResultMap">
+        SELECT * FROM enrollment
+    </select>
+
+    <!-- 根据ID查询选课记录 -->
+    <select id="findById" resultMap="EnrollmentResultMap">
+        SELECT * FROM enrollment WHERE enrollment_id = #{id}
+    </select>
+
+    <!-- 插入选课记录 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="enrollmentId">
+        INSERT INTO enrollment(student_id, course_id, grade)
+        VALUES(#{studentId}, #{courseId}, #{grade})
+    </insert>
+
+    <!-- 更新选课记录 -->
+    <update id="update">
+        UPDATE enrollment SET grade = #{grade} WHERE enrollment_id = #{enrollmentId}
+    </update>
+
+    <!-- 删除选课记录 -->
+    <delete id="deleteById">
+        DELETE FROM enrollment WHERE enrollment_id = #{id}
+    </delete>
+
+</mapper>

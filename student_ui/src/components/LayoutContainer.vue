@@ -2,16 +2,29 @@
   <div class="layout-container">
     <div class="sidebar">
       <!-- 侧边栏导航，使用router-link来进行页面跳转 -->
-      <el-menu :default-active="activeMenu" class="el-menu-vertical-demo" @select="handleMenuSelect">
+      <el-menu  class="el-menu-vertical-demo" >
         <el-menu-item index="1">
           <router-link to="/home">主页</router-link>
         </el-menu-item>
         <el-menu-item index="2">
-          <router-link to="/students">学生管理</router-link>
+          <router-link to="/management">学生管理</router-link>
         </el-menu-item>
         <el-menu-item index="3">
+          <router-link to="/course">课程管理</router-link>
+        </el-menu-item>
+        <el-menu-item index="4">
+          <router-link to="/teacher">教师管理</router-link>
+        </el-menu-item>
+        <el-menu-item index="5">
+          <router-link to="/enroll">选课管理</router-link>
+        </el-menu-item>
+        <el-menu-item index="6">
+          <router-link to="/attendance">考勤管理</router-link>
+        </el-menu-item>
+        <el-menu-item index="8">
           <router-link to="/settings">设置</router-link>
         </el-menu-item>
+
       </el-menu>
     </div>
 
@@ -31,23 +44,6 @@ export default {
     };
   },
   methods: {
-    handleMenuSelect(index) {
-      this.activeMenu = index;
-      // 根据菜单项跳转路由
-      switch (index) {
-        case '1':
-          this.$router.push('/home');
-          break;
-        case '2':
-          this.$router.push('/students');
-          break;
-        case '3':
-          this.$router.push('/settings');
-          break;
-        default:
-          break;
-      }
-    },
   },
 };
 </script>
