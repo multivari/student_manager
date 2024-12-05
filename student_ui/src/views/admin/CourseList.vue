@@ -5,7 +5,7 @@
       <el-table-column label="课程ID" prop="courseId" />
       <el-table-column label="课程名称" prop="courseName" />
       <el-table-column label="学分" prop="credits" />
-      <el-table-column label="教师ID" prop="instructorId" />
+      <el-table-column label="教师" prop="instructorName" />
       <el-table-column label="操作">
         <template #default="scope">
           <el-button @click="openEditDialog(scope.row)" size="small">编辑</el-button>
@@ -28,8 +28,16 @@
           <el-input v-model="courseForm.credits" type="number" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="教师ID" prop="instructorId">
-          <el-input v-model="courseForm.instructorId" type="number" autocomplete="off"></el-input>
+        <!-- 教师下拉框 -->
+        <el-form-item label="教师" prop="instructorId">
+          <el-select v-model="courseForm.instructorId" placeholder="请选择教师">
+            <el-option
+                v-for="instructor in instructors"
+                :key="instructor.instructorId"
+                :label="instructor.name"
+                :value="instructor.instructorId"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
@@ -52,8 +60,16 @@
           <el-input v-model="courseForm.credits" type="number" autocomplete="off"></el-input>
         </el-form-item>
 
-        <el-form-item label="教师ID" prop="instructorId">
-          <el-input v-model="courseForm.instructorId" type="number" autocomplete="off"></el-input>
+        <!-- 教师下拉框 -->
+        <el-form-item label="教师" prop="instructorId">
+          <el-select v-model="courseForm.instructorId" placeholder="请选择教师">
+            <el-option
+                v-for="instructor in instructors"
+                :key="instructor.instructorId"
+                :label="instructor.name"
+                :value="instructor.instructorId"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
@@ -76,31 +92,47 @@ export default {
   data() {
     return {
       courses: [],
+      instructors: [],  // 存储教师列表
       addDialogVisible: false,
       editDialogVisible: false,
       courseForm: {
         courseId: null,
         courseName: '',
         credits: 0,
-        instructorId: 0,
+        instructorId: null,  // 选择的教师ID
       },
       formRules: {
         courseName: [
           { required: true, message: '请输入课程名称', trigger: 'blur' }
         ],
         credits: [
-          { required: true, message: '请输入学分', trigger: 'blur' },
-          { type: 'number', message: '请输入有效的学分', trigger: 'blur' }
+          {
+            required: true,
+            message: '请输入学分',
+            trigger: 'blur'
+          },
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback(new Error('请输入学分'));
+              } else if (!/^(\d+(\.\d{1,2})?)?$/.test(value)) {
+                callback(new Error('请输入有效的学分'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         instructorId: [
-          { required: true, message: '请输入教师ID', trigger: 'blur' },
-          { type: 'number', message: '请输入有效的教师ID', trigger: 'blur' }
+          { required: true, message: '请选择教师', trigger: 'blur' },
         ]
       }
     };
   },
   created() {
     this.fetchCourses();
+    this.fetchInstructors();  // 获取教师列表
   },
   methods: {
     // 获取课程列表
@@ -110,6 +142,15 @@ export default {
             this.courses = response.data;
           })
           .catch(() => this.showError('获取课程列表失败'));
+    },
+
+    // 获取教师列表
+    fetchInstructors() {
+      requests.get('/instructors')
+          .then(response => {
+            this.instructors = response.data;
+          })
+          .catch(() => this.showError('获取教师列表失败'));
     },
 
     // 显示错误信息
@@ -175,7 +216,7 @@ export default {
         courseId: null,
         courseName: '',
         credits: 0,
-        instructorId: 0,
+        instructorId: null,  // 初始化为空
       };
     }
   }

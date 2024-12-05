@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!--<mapper namespace="com.student.manager.mapper.">-->
 <mapper namespace="com.student.manager.mapper.EnrollmentMapper">
 
     <!-- 映射查询结果 -->
@@ -9,16 +8,29 @@
         <result property="studentId" column="student_id"/>
         <result property="courseId" column="course_id"/>
         <result property="grade" column="grade"/>
+        <!-- 映射学生姓名 -->
+        <result property="studentName" column="name"/>
+        <!-- 映射课程名称 -->
+        <result property="courseName" column="course_name"/>
     </resultMap>
 
-    <!-- 查询所有选课记录 -->
+    <!-- 查询所有选课记录，并联接学生和课程表 -->
     <select id="findAll" resultMap="EnrollmentResultMap">
-        SELECT * FROM enrollment
+        SELECT e.enrollment_id, e.student_id, e.course_id, e.grade,
+               s.name, c.course_name
+        FROM enrollment e
+                 LEFT JOIN student s ON e.student_id = s.student_id
+                 LEFT JOIN course c ON e.course_id = c.course_id
     </select>
 
-    <!-- 根据ID查询选课记录 -->
+    <!-- 根据ID查询选课记录，并联接学生和课程表 -->
     <select id="findById" resultMap="EnrollmentResultMap">
-        SELECT * FROM enrollment WHERE enrollment_id = #{id}
+        SELECT e.enrollment_id, e.student_id, e.course_id, e.grade,
+               s.name, c.course_name
+        FROM enrollment e
+                 LEFT JOIN student s ON e.student_id = s.student_id
+                 LEFT JOIN course c ON e.course_id = c.course_id
+        WHERE e.enrollment_id = #{id}
     </select>
 
     <!-- 插入选课记录 -->
@@ -29,7 +41,9 @@
 
     <!-- 更新选课记录 -->
     <update id="update">
-        UPDATE enrollment SET grade = #{grade} WHERE enrollment_id = #{enrollmentId}
+        UPDATE enrollment
+        SET grade = #{grade}
+        WHERE enrollment_id = #{enrollmentId}
     </update>
 
     <!-- 删除选课记录 -->

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.student.manager.mapper.AttendanceMapper">
+
+    <!-- 映射查询结果 -->
+    <resultMap id="AttendanceResultMap" type="com.student.manager.domain.Attendance">
+        <result property="attendanceId" column="attendance_id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="date" column="date"/>
+        <result property="status" column="status"/>
+        <!-- 关联学生姓名 -->
+        <result property="studentName" column="name"/>
+        <!-- 关联课程名称 -->
+        <result property="courseName" column="course_name"/>
+    </resultMap>
+
+    <!-- 查询所有考勤记录 -->
+    <select id="findAll" resultMap="AttendanceResultMap">
+        SELECT
+        a.attendance_id,
+        a.student_id,
+        a.course_id,
+        a.date,
+        a.status,
+        s.name,  <!-- 学生姓名 -->
+        c.course_name    <!-- 课程名称 -->
+        FROM attendance a
+        LEFT JOIN student s ON a.student_id = s.student_id
+        LEFT JOIN course c ON a.course_id = c.course_id
+    </select>
+
+    <!-- 根据ID查询考勤记录 -->
+    <select id="findById" resultMap="AttendanceResultMap">
+        SELECT
+        a.attendance_id,
+        a.student_id,
+        a.course_id,
+        a.date,
+        a.status,
+        s.name,  <!-- 学生姓名 -->
+        c.course_name    <!-- 课程名称 -->
+        FROM attendance a
+        LEFT JOIN student s ON a.student_id = s.student_id
+        LEFT JOIN course c ON a.course_id = c.course_id
+        WHERE a.attendance_id = #{id}
+    </select>
+
+    <!-- 插入考勤记录 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="attendanceId">
+        INSERT INTO attendance(student_id, course_id, date, status)
+        VALUES(#{studentId}, #{courseId}, #{date}, #{status})
+    </insert>
+
+    <!-- 更新考勤记录 -->
+    <update id="update">
+        UPDATE attendance
+        SET student_id = #{studentId},
+            course_id = #{courseId},
+            date = #{date},
+            status = #{status}
+        WHERE attendance_id = #{attendanceId}
+    </update>
+
+    <!-- 删除考勤记录 -->
+    <delete id="deleteById">
+        DELETE FROM attendance WHERE attendance_id = #{id}
+    </delete>
+
+</mapper>

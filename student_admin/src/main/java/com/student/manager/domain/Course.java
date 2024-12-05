@@ -14,6 +14,16 @@ public class Course implements Serializable {
     private Integer credits;        // 学分
     private Integer instructorId;   // 教师ID
 
+    private String instructorName; //教师名字
+
+    public String getInstructorName() {
+        return instructorName;
+    }
+
+    public void setInstructorName(String instructorName) {
+        this.instructorName = instructorName;
+    }
+
     public Integer getCourseId() {
         return courseId;
     }

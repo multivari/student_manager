@@ -2,10 +2,10 @@
   <div>
     <el-table :data="attendances" style="width: 100%">
       <el-table-column prop="attendanceId" label="考勤ID" />
-      <el-table-column prop="studentId" label="学生ID" />
-      <el-table-column prop="courseId" label="课程ID" />
+      <el-table-column prop="studentName" label="学生姓名"  />
+      <el-table-column prop="courseName" label="课程名称"  />
       <el-table-column prop="date" label="考勤日期" />
-      <el-table-column prop="status" label="考勤状态" />
+      <el-table-column prop="statusText" label="考勤状态" />  <!-- 显示中文状态 -->
       <el-table-column label="操作">
         <template #default="scope">
           <el-button @click="editAttendance(scope.row)" size="small">编辑</el-button>
@@ -19,24 +19,44 @@
     <!-- 编辑考勤对话框 -->
     <el-dialog title="编辑考勤" v-model="dialogVisible">
       <el-form :model="form" ref="form" :rules="formRules" label-width="80px">
-        <el-form-item label="学生ID" prop="studentId">
-          <el-input v-model="form.studentId" autocomplete="off"></el-input>
+
+        <!-- 学生选择 -->
+        <el-form-item label="学生" prop="studentId">
+          <el-select v-model="form.studentId" placeholder="请选择学生">
+            <el-option
+                v-for="student in students"
+                :key="student.studentId"
+                :label="student.name"
+                :value="student.studentId"
+            />
+          </el-select>
         </el-form-item>
 
-        <el-form-item label="课程ID" prop="courseId">
-          <el-input v-model="form.courseId" autocomplete="off"></el-input>
+        <!-- 课程选择 -->
+        <el-form-item label="课程" prop="courseId">
+          <el-select v-model="form.courseId" placeholder="请选择课程">
+            <el-option
+                v-for="course in courses"
+                :key="course.courseId"
+                :label="course.courseName"
+                :value="course.courseId"
+            />
+          </el-select>
         </el-form-item>
 
+        <!-- 考勤日期 -->
         <el-form-item label="考勤日期" prop="date">
           <el-date-picker v-model="form.date" type="date" placeholder="选择考勤日期" style="width: 100%"></el-date-picker>
         </el-form-item>
 
+        <!-- 考勤状态 -->
         <el-form-item label="考勤状态" prop="status">
           <el-select v-model="form.status" placeholder="选择考勤状态" style="width: 100%">
             <el-option label="出勤" value="Present"></el-option>
             <el-option label="缺席" value="Absent"></el-option>
           </el-select>
         </el-form-item>
+
       </el-form>
 
       <template #footer>
@@ -58,17 +78,19 @@ export default {
   data() {
     return {
       attendances: [],
+      students: [], // 存储学生列表
+      courses: [], // 存储课程列表
       dialogVisible: false,
       form: {
         attendanceId: null,
-        studentId: '',
-        courseId: '',
+        studentId: '', // 提交的学生ID
+        courseId: '',  // 提交的课程ID
         date: '',
         status: ''
       },
       formRules: {
-        studentId: [{ required: true, message: '请输入学生ID', trigger: 'blur' }],
-        courseId: [{ required: true, message: '请输入课程ID', trigger: 'blur' }],
+        studentId: [{ required: true, message: '请选择学生', trigger: 'blur' }],
+        courseId: [{ required: true, message: '请选择课程', trigger: 'blur' }],
         date: [{ required: true, message: '请选择考勤日期', trigger: 'change' }],
         status: [{ required: true, message: '请选择考勤状态', trigger: 'change' }]
       }
@@ -76,26 +98,65 @@ export default {
   },
   created() {
     this.fetchAttendances();
+    this.fetchStudents();
+    this.fetchCourses();
   },
   methods: {
+    // 获取考勤记录
     fetchAttendances() {
       requests.get('/attendances')
           .then(response => {
-            this.attendances = response.data;
+            this.attendances = response.data.map(item => {
+              // 映射状态为中文
+              item.statusText = this.mapStatusToText(item.status);
+              return item;
+            });
           })
           .catch(() => ElMessage.error('获取考勤记录失败'));
     },
+// 状态映射函数
+    mapStatusToText(status) {
+      switch (status) {
+        case 'Present':
+          return '出勤';
+        case 'Absent':
+          return '缺席';
+        default:
+          return '未知状态';
+      }
+    },
 
+    // 获取学生列表
+    fetchStudents() {
+      requests.get('/students')
+          .then(response => {
+            this.students = response.data;
+          })
+          .catch(() => ElMessage.error('获取学生列表失败'));
+    },
+
+    // 获取课程列表
+    fetchCourses() {
+      requests.get('/courses')
+          .then(response => {
+            this.courses = response.data;
+          })
+          .catch(() => ElMessage.error('获取课程列表失败'));
+    },
+
+    // 添加考勤记录
     addAttendance() {
       this.resetForm();
       this.dialogVisible = true;
     },
 
+    // 编辑考勤记录
     editAttendance(row) {
       this.form = { ...row };
       this.dialogVisible = true;
     },
 
+    // 删除考勤记录
     deleteAttendance(attendanceId) {
       requests.delete(`/attendances/${attendanceId}`)
           .then(() => {
@@ -105,10 +166,12 @@ export default {
           .catch(() => ElMessage.error('删除失败'));
     },
 
+    // 关闭对话框
     closeDialog() {
       this.dialogVisible = false;
     },
 
+    // 重置表单
     resetForm() {
       this.form = {
         attendanceId: null,
@@ -119,6 +182,7 @@ export default {
       };
     },
 
+    // 提交表单
     submitForm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -141,7 +205,8 @@ export default {
           }
         }
       });
-    }
+    },
+
   }
 };
 </script>

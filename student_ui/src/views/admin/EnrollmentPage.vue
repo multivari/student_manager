@@ -2,8 +2,8 @@
   <div>
     <el-table :data="enrollments" style="width: 100%">
       <el-table-column prop="enrollmentId" label="选课ID" />
-      <el-table-column prop="studentId" label="学生ID" />
-      <el-table-column prop="courseId" label="课程ID" />
+      <el-table-column prop="studentName" label="学生姓名" />
+      <el-table-column prop="courseName" label="课程名称" />
       <el-table-column prop="grade" label="成绩" />
       <el-table-column label="操作">
         <template #default="scope">
@@ -18,14 +18,32 @@
     <!-- 编辑选课对话框 -->
     <el-dialog title="编辑选课" v-model="dialogVisible">
       <el-form :model="form" ref="form" :rules="formRules" label-width="80px">
-        <el-form-item label="学生ID" prop="studentId">
-          <el-input v-model="form.studentId" autocomplete="off"></el-input>
+
+        <!-- 学生选择 -->
+        <el-form-item label="学生" prop="studentId">
+          <el-select v-model="form.studentId" placeholder="请选择学生" @change="handleStudentChange">
+            <el-option
+                v-for="student in students"
+                :key="student.studentId"
+                :label="student.name"
+                :value="student.studentId"
+            />
+          </el-select>
         </el-form-item>
 
-        <el-form-item label="课程ID" prop="courseId">
-          <el-input v-model="form.courseId" autocomplete="off"></el-input>
+        <!-- 课程选择 -->
+        <el-form-item label="课程" prop="courseId">
+          <el-select v-model="form.courseId" placeholder="请选择课程" @change="handleCourseChange">
+            <el-option
+                v-for="course in courses"
+                :key="course.courseId"
+                :label="course.courseName"
+                :value="course.courseId"
+            />
+          </el-select>
         </el-form-item>
 
+        <!-- 成绩输入 -->
         <el-form-item label="成绩" prop="grade">
           <el-input v-model="form.grade" autocomplete="off" type="number"></el-input>
         </el-form-item>
@@ -50,19 +68,21 @@ export default {
   data() {
     return {
       enrollments: [],
+      students: [], // 存储学生列表
+      courses: [], // 存储课程列表
       dialogVisible: false,
       form: {
         enrollmentId: null,
-        studentId: '',
-        courseId: '',
+        studentId: '', // 学生ID
+        courseId: '',  // 课程ID
         grade: ''
       },
       formRules: {
         studentId: [
-          { required: true, message: '请输入学生ID', trigger: 'blur' }
+          { required: true, message: '请选择学生', trigger: 'change' }
         ],
         courseId: [
-          { required: true, message: '请输入课程ID', trigger: 'blur' }
+          { required: true, message: '请选择课程', trigger: 'change' }
         ],
         grade: [
           { required: true, message: '请输入成绩', trigger: 'blur' },
@@ -73,8 +93,11 @@ export default {
   },
   created() {
     this.fetchEnrollments();
+    this.fetchStudents();
+    this.fetchCourses();
   },
   methods: {
+    // 获取选课信息
     fetchEnrollments() {
       requests.get('/enrollments')
           .then(response => {
@@ -83,20 +106,41 @@ export default {
           .catch(() => this.showError('获取选课信息失败'));
     },
 
+    // 获取学生信息
+    fetchStudents() {
+      requests.get('/students')
+          .then(response => {
+            this.students = response.data;
+          })
+          .catch(() => this.showError('获取学生信息失败'));
+    },
+
+    // 获取课程信息
+    fetchCourses() {
+      requests.get('/courses')
+          .then(response => {
+            this.courses = response.data;
+          })
+          .catch(() => this.showError('获取课程信息失败'));
+    },
+
     showError(message) {
       ElMessage.error(message);
     },
 
+    // 添加选课
     addEnrollment() {
       this.resetForm();
       this.dialogVisible = true;
     },
 
+    // 编辑选课
     editEnrollment(enrollment) {
       this.form = { ...enrollment };  // 填充表单
       this.dialogVisible = true;
     },
 
+    // 删除选课
     deleteEnrollment(enrollmentId) {
       requests.delete(`/enrollments/${enrollmentId}`)
           .then(() => {
@@ -106,6 +150,7 @@ export default {
           .catch(() => this.showError('删除失败'));
     },
 
+    // 提交表单
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -139,7 +184,28 @@ export default {
         grade: ''
       };
     },
-  },
+
+    handleStudentChange(value) {
+      console.log(value);
+    },
+
+    handleCourseChange(value) {
+      console.log(value);
+    },
+
+
+    // 获取学生姓名
+    getStudentName(studentId) {
+      const student = this.students.find(student => student.studentId === studentId);
+      return student ? student.studentName : '';
+    },
+
+    // 获取课程名称
+    getCourseName(courseId) {
+      const course = this.courses.find(course => course.courseId === courseId);
+      return course ? course.courseName : '';
+    }
+  }
 };
 </script>
 

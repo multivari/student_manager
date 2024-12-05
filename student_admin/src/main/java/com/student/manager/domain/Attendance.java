@@ -9,6 +9,27 @@ public class Attendance {
     private Date date;  // 考勤日期
     private String status;  // 考勤状态（出勤/缺席）
 
+    private String studentName;  //学生姓名
+
+
+    private String courseName;  //学生姓名
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
     // Getter 和 Setter
     public Long getAttendanceId() {
         return attendanceId;
