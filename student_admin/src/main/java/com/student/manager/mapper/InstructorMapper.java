@@ -18,4 +18,6 @@ public interface InstructorMapper {
     void update(Instructor instructor);
 
     void deleteById(Long instructorId);
+
+    List<Instructor> findByName(String username);
 }

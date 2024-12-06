@@ -7,6 +7,7 @@ import CourseList from "@/views/admin/CourseList.vue";
 import InstructorManagement from "@/views/admin/InstructorManagement";
 import EnrollmentPage from "@/views/admin/EnrollmentPage";
 import AttendanceManagement from "@/views/admin/AttendanceManagement";
+import LoginPage from "@/views/LoginPage";
 
 const routes = [
     {
@@ -50,6 +51,11 @@ const routes = [
                 component: AttendanceManagement,  // 将 CourseList attendance
             },
         ]
+    },
+    {
+        path: "/login",
+        name: "Login",
+        component: LoginPage
     }
 ];
 

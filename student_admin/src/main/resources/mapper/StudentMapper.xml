@@ -43,6 +43,13 @@
         WHERE student_id = #{studentId}
     </select>
 
+    <!-- 查询操作 - 根据姓名查询学生 -->
+    <select id="findByName" resultMap="studentResultMap">
+        SELECT student_id, name, email, phone, dob, address, enrollment_date
+        FROM student
+        WHERE name = #{username}
+    </select>
+
     <!-- 查询操作 - 查询所有学生 -->
     <select id="selectAllStudents" resultMap="studentResultMap">
         SELECT student_id, name, email, phone, dob, address, enrollment_date

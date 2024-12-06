@@ -33,4 +33,8 @@ public class InstructorService {
     public void deleteInstructor(Long instructorId) {
         instructorMapper.deleteById(instructorId);
     }
+
+    List<Instructor> findByName(String username){
+        return instructorMapper.findByName(username);
+    }
 }

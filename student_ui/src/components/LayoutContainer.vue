@@ -6,22 +6,31 @@
         <el-menu-item index="1">
           <router-link to="/home" class="menu-item">主页</router-link>
         </el-menu-item>
-        <el-menu-item index="2">
+
+        <!-- 学生角色只能看到学生管理 -->
+        <el-menu-item v-if="hasRole('student')" index="2">
           <router-link to="/management" class="menu-item">学生管理</router-link>
         </el-menu-item>
-        <el-menu-item index="3">
+
+        <!-- 教师角色只能看到课程管理、教师管理和选课管理 -->
+        <el-menu-item v-if="hasRole('instructor')" index="3">
           <router-link to="/course" class="menu-item">课程管理</router-link>
         </el-menu-item>
-        <el-menu-item index="4">
+
+        <el-menu-item v-if="hasRole('instructor')" index="4">
           <router-link to="/teacher" class="menu-item">教师管理</router-link>
         </el-menu-item>
-        <el-menu-item index="5">
+
+        <el-menu-item v-if="hasRole('instructor')" index="5">
           <router-link to="/enroll" class="menu-item">选课管理</router-link>
         </el-menu-item>
-        <el-menu-item index="6">
+
+        <!-- 管理员角色可以看到所有菜单项 -->
+        <el-menu-item v-if="hasRole('admin')" index="6">
           <router-link to="/attendance" class="menu-item">考勤管理</router-link>
         </el-menu-item>
-        <el-menu-item index="8">
+
+        <el-menu-item v-if="hasRole('admin')" index="7">
           <router-link to="/settings" class="menu-item">设置</router-link>
         </el-menu-item>
       </el-menu>
@@ -41,6 +50,19 @@ export default {
     return {
       activeMenu: '1', // 默认选中的菜单项
     };
+  },
+  computed: {
+    // 获取当前用户的角色
+    userRole() {
+      // 假设从 Vuex 或 localStorage 中读取用户角色
+      return this.$store.state.user.role || 'student';  // 默认角色为学生
+    }
+  },
+  methods: {
+    // 根据角色判断是否有权限访问某些菜单项
+    hasRole(role) {
+      return this.userRole === role || this.userRole === 'admin'; // 管理员可以访问所有角色权限
+    }
   },
 };
 </script>
@@ -79,8 +101,7 @@ export default {
 }
 
 .menu-item:hover {
-  /*background-color: #3e4b66;*/
-  color:  #3e4b66;
+  color: #3e4b66;
 }
 
 .content {

@@ -33,4 +33,6 @@ public class StudentService {
     public void deleteStudent(Long id) {
         studentMapper.deleteStudent(id);
     }
+
+    public List<Student> findByName(String username){ return studentMapper.findByName(username);}
 }

@@ -22,4 +22,8 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 输出 SQL 日志
 
+jwt:
+  secret: dgZkotPFv80O6eAqdIaE3bqUtJ9TgYHD3fATwTDSiUSm1mTDP/6qcaUmanGLNH7zK6m39M24nR7bbwqKBlt6UQ==
+  expiration: 3600000  # 过期时间，例如 1 小时
+
 

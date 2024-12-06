@@ -8,14 +8,17 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';  // 引入中文
 import router from './router'; // 引入路由配置
+import store from './store';  // 确保导入你的 store
 // 设置全局语言为中文
 dayjs.locale('zh-cn');
+
 
 const app = createApp(App)
 
 // 使用 Element Plus 组件库
 app.use(ElementPlus, { locale: zhCn })
 app.use(router) // 使用 Vue Router
+app.use(store);  // 确保 store 被挂载到应用上
 
 app.mount('#app')
 

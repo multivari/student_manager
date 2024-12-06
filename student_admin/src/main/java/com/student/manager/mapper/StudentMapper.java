@@ -32,4 +32,6 @@ public interface StudentMapper {
 
     // 删除学生
     void deleteStudent(Long studentId);
+
+    List<Student> findByName(String username);
 }

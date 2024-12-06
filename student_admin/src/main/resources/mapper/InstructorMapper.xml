@@ -20,6 +20,11 @@
         SELECT * FROM instructor WHERE instructor_id = #{id}
     </select>
 
+    <!-- 根据名字查询单个教师 -->
+    <select id="findByName" resultMap="InstructorResultMap">
+        SELECT * FROM instructor WHERE name = #{username}
+    </select>
+
     <!-- 插入教师 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="instructorId">
         INSERT INTO instructor(name, email, phone)
